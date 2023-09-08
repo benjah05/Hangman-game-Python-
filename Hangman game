@@ -1,0 +1,71 @@
+'''Hangman game assignment submitted on September 8th, 2023
+Computer Science Level 1
+Group members:
+Senzele Benjamine
+Uwineza Mutabaruka Gloria 
+Uwayo Anne Marie '''
+
+# Hangman game
+import random
+import string
+import sys
+word_list = ["love", "joy", "peace", "patience", "kindness", "goodness", "faithfulness","gentleness","selfcontrol"]
+def choose_word(word_list):
+    return random.choice(word_list)
+def display_word(word, guessed_letters):
+    display = ""
+    for letter in word:
+        if letter in guessed_letters:
+            display += letter
+        else:
+            display += "-"
+    return display
+def hangman_game():
+    word_to_guess = choose_word(word_list)
+    guessed_letters = []
+    remaining_guesses = 6
+    warnings = 3
+    print("Welcome to Hangman!")
+    print("I'm thinking of a word. Can you guess it?")
+
+    while remaining_guesses > 0:
+        print(f"\nWord: {display_word(word_to_guess, guessed_letters)}")
+        print(f"You have: {remaining_guesses} guesses left.")
+        print(f"Letters not yet used: {' '.join(set(string.ascii_lowercase) - set(guessed_letters))}")
+
+        guess = input("Guess a letter: ").lower()
+
+        if len(guess) != 1 or guess not in string.ascii_lowercase:
+            if warnings > 0:
+                warnings -= 1
+                print(f"Invalid input!! You have {warnings} warning(s) left.")
+            else:
+                remaining_guesses -= 1
+                print("Invalid input!! No warnings left. You lose a guess.")
+        else:
+            if guess in guessed_letters:
+                if warnings > 0:
+                    warnings -= 1
+                    print(f"You've already guessed '{guess}'. You have {warnings} warning(s) left.")
+                else:
+                    remaining_guesses -= 1
+                    print(f"You've already guessed '{guess}'. No warnings left. You lose a guess.")
+            else:
+                guessed_letters.append(guess)
+                if guess in word_to_guess:
+                    print(":) Good guess!!")
+                elif guess in "aeiou":
+                    remaining_guesses -= 2
+                    print(":( Oops! That's a non-existent vowel. You lose 2 guesses.")
+                else:
+                    remaining_guesses -= 1
+                    print(":( Oops! That's a non-existent consonant. You lose 1 guess.")
+        if set(word_to_guess) == set(guessed_letters):
+            print(f";) Yay!! Congratulations! You guessed the word '{word_to_guess}'!")
+            score = remaining_guesses * len(set(guessed_letters))
+            print(f"Your score is: {score}")
+            break
+    if remaining_guesses <= 0:
+         print(f"Sorry, you've run out of guesses. The word was '{word_to_guess}'.")
+         sys.exit()
+hangman_game()
